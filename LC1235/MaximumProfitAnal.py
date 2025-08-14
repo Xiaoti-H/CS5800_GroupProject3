@@ -19,17 +19,16 @@ sys.setrecursionlimit(12000)
 def run_analysis(sizes, num_trials, density_multiplier, scenario_name):
     """
     Runs a comparative analysis for a specific job density scenario.
+    record the time and peak memory usage for each method
     """
     solver = Solution()
     results = []
 
-    # *** FIX: Updated print header to include memory columns ***
     print(f"\n--- Running Analysis for: {scenario_name} ---")
     print(f"{'Size':>10s} | {'DP Time (s)':>15s} | {'Heur Time (s)':>15s} | {'Accuracy (%)':>15s} | {'DP Mem (KiB)':>15s} | {'Heur Mem (KiB)':>15s}")
     print("-" * 105)
 
     for size in sizes:
-        # *** FIX: Initialized lists to store memory peaks for each trial ***
         dp_times, heuristic_times, accuracies = [], [], []
         dp_memory_peaks, heuristic_memory_peaks = [], []
 
@@ -62,7 +61,6 @@ def run_analysis(sizes, num_trials, density_multiplier, scenario_name):
             profit_heuristic = solver.jobSchedulingHeuristic(start_times[:], end_times[:], profits[:])
             heuristic_times.append(time.perf_counter() - start_t)
             current, peak = tracemalloc.get_traced_memory()
-            # *** FIX: Corrected variable name and appended memory data ***
             heuristic_memory_peaks.append(peak / 1024)
             tracemalloc.stop()
 
@@ -76,11 +74,10 @@ def run_analysis(sizes, num_trials, density_multiplier, scenario_name):
         avg_dp_time = stats.mean(dp_times)
         avg_heuristic_time = stats.mean(heuristic_times)
         avg_accuracy = stats.mean(accuracies) if accuracies else 100.0
-        # *** FIX: Calculated average memory usage ***
         avg_dp_mem = stats.mean(dp_memory_peaks)
         avg_heuristic_mem = stats.mean(heuristic_memory_peaks)
 
-        # *** FIX: Added memory results to the dictionary ***
+        # Memory results to the dictionary
         results.append({
             'size': size,
             'avg_dp_time': avg_dp_time,
@@ -90,7 +87,6 @@ def run_analysis(sizes, num_trials, density_multiplier, scenario_name):
             'avg_heuristic_mem': avg_heuristic_mem
         })
         
-        # *** FIX: Updated print statement to show memory results ***
         print(f"{size:>10d} | {avg_dp_time:>15.6f} | {avg_heuristic_time:>15.6f} | {avg_accuracy:>14.2f}% | {avg_dp_mem:>15.2f} | {avg_heuristic_mem:>15.2f}")
 
     return results
@@ -163,7 +159,6 @@ def save_and_plot_results(all_results, sizes):
         plt.show()
 
     # --- Plot 4: Memory Usage Comparison ---
-    # *** FIX: Corrected indentation for this plotting block ***
     plt.figure(figsize=(8, 6))
     if normal_results:
         sizes_plot = [r['size'] for r in normal_results]
